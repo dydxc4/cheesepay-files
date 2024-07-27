@@ -1,7 +1,4 @@
--- Active: 1721859007655@@192.168.1.1@3306@phpmyadmin
-
--- DDL -> Creación de la estructura de la BD
-
+-- Active: 1721859007655@@192.168.1.1@3306@SistemaEscolar
 CREATE DATABASE SistemaEscolar
 
 USE SistemaEscolar
@@ -32,16 +29,22 @@ CREATE TABLE tutores(
     parentesco VARCHAR(10) NOT NULL
 )
 
+CREATE TABLE ciclos_escolares(
+    codigo VARCHAR(5) PRIMARY KEY,
+    fechaInicio DATE NOT NULL,
+    fechaFin DATE NOT NULL
+)
+
 CREATE TABLE niveles_educativos(
     codigo VARCHAR(5) PRIMARY KEY,
     descripcion VARCHAR(15) NOT NULL UNIQUE
 )
 
 CREATE TABLE eventos_especiales(
-    numero INT PRIMARY KEY AUTO_INCREMENT,
+    codigo VARCHAR(5) PRIMARY KEY,
     concepto VARCHAR(30) NOT NULL,
     fechaProgramada DATE NOT NULL,
-    costo FLOAT NOT NULL CHECK (costo >= 0)
+    costo FLOAT NOT NULL CHECK (costo > 0)
 )
 
 CREATE TABLE mantenimiento(
@@ -50,40 +53,25 @@ CREATE TABLE mantenimiento(
     costo FLOAT NOT NULL CHECK (costo > 0)
 )
 
-CREATE TABLE ciclos_escolares(
-    codigo VARCHAR(5) PRIMARY KEY,
-    fechaInicio DATE NOT NULL,
-    fechaFin DATE NOT NULL,
-    cobroMantenimiento INT NOT NULL,
-    FOREIGN KEY (cobroMantenimiento) REFERENCES mantenimiento(numero)
-)
-
 CREATE TABLE papeleria(
-    numero INT PRIMARY KEY AUTO_INCREMENT,
+    codigo VARCHAR(8) PRIMARY KEY,
     concepto VARCHAR(40) NOT NULL,
     costo FLOAT NOT NULL CHECK (costo >= 0),
-    ciclo VARCHAR(5) NOT NULL,
     nivel VARCHAR(5) NOT NULL,
-    FOREIGN KEY (ciclo) REFERENCES ciclos_escolares(codigo),
     FOREIGN KEY (nivel) REFERENCES niveles_educativos(codigo)
 )
 
 CREATE TABLE inscripciones(
-    numero INT PRIMARY KEY AUTO_INCREMENT,
+    codigo VARCHAR(5) PRIMARY KEY,
     costo FLOAT NOT NULL CHECK (costo >= 0),
-    fechaLimite	DATE NOT NULL,
-    ciclo VARCHAR(5) NOT NULL,
     nivel VARCHAR(5) NOT NULL,
-    FOREIGN KEY (ciclo) REFERENCES ciclos_escolares(codigo),
     FOREIGN KEY (nivel) REFERENCES niveles_educativos(codigo)
 )
 
 CREATE TABLE mensualidades(
-    numero INT PRIMARY KEY AUTO_INCREMENT,
+    codigo VARCHAR(5) PRIMARY KEY,
     costo FLOAT NOT NULL CHECK (costo >= 0),
-    ciclo VARCHAR(5) NOT NULL,
     nivel VARCHAR(5) NOT NULL,
-    FOREIGN KEY (ciclo) REFERENCES ciclos_escolares(codigo),
     FOREIGN KEY (nivel) REFERENCES niveles_educativos(codigo)
 )
 
@@ -100,14 +88,6 @@ CREATE TABLE uniformes(
     tipo INT NOT NULL,
     nivel VARCHAR(5) NOT NULL,
     FOREIGN KEY (tipo) REFERENCES tipos_uniforme(numero),
-    FOREIGN KEY (nivel) REFERENCES niveles_educativos(codigo)
-)
-
-CREATE TABLE alumnos_inscritos(
-    alumno VARCHAR(5),
-    nivel VARCHAR(5),
-    PRIMARY KEY (alumno, nivel),
-    FOREIGN KEY (alumno) REFERENCES alumnos(matricula),
     FOREIGN KEY (nivel) REFERENCES niveles_educativos(codigo)
 )
 
@@ -133,7 +113,7 @@ CREATE TABLE grupos_alumnos(
     grupo INT,
     alumno VARCHAR(5),
     PRIMARY KEY (grupo, alumno),
-    FOREIGN KEY (grupo) REFERENCES grupos(codigo),
+    FOREIGN KEY (grupo) REFERENCES grupos(numero),
     FOREIGN KEY (alumno) REFERENCES alumnos(matricula)
 )
 
@@ -144,55 +124,40 @@ CREATE TABLE tutor_telefonos(
     FOREIGN KEY (tutor) REFERENCES tutores(numero)
 )
 
-CREATE TABLE empleados(
-    numero INT PRIMARY KEY AUTO_INCREMENT,
-    nombreUsuario VARCHAR(30) NOT NULL UNIQUE,
-    contraseña VARCHAR(16) NOT NULL,
-    nombreEmpleado VARCHAR(30) NOT NULL,
-    primerApellido VARCHAR(30) NOT NULL,
-    segundoApellido VARCHAR(30) NULL,
-    supervisor INT NULL
-)
-
-ALTER TABLE empleados
-    ADD CONSTRAINT FK_empleados_supervisor
-    FOREIGN KEY (supervisor) REFERENCES empleados(numero)
-
 CREATE TABLE pagos(
     folio INT PRIMARY KEY AUTO_INCREMENT,
     fecha DATE NOT NULL,
     montoTotal FLOAT NOT NULL,
     alumno VARCHAR(5) NOT NULL,
     tutor INT NOT NULL,
-    autoriza INT NOT NULL,
     FOREIGN KEY (alumno) REFERENCES alumnos(matricula),
-    FOREIGN KEY (tutor) REFERENCES tutores(numero),
-    FOREIGN KEY (autoriza) REFERENCES empleados(numero)
+    FOREIGN KEY (tutor) REFERENCES tutores(numero)
 )
 
 CREATE TABLE cobros(
-    codigo VARCHAR(7) PRIMARY KEY,
-    mensualidad INT NULL,
+    codigo VARCHAR(11) PRIMARY KEY,
+    ciclo VARCHAR(5) NOT NULL,
+    mensualidad VARCHAR(5) NULL,
     mantenimiento INT NULL,
-    inscripcion INT NULL,
-    papeleria INT NULL,
+    inscripcion VARCHAR(5) NULL,
+    papeleria VARCHAR(8) NULL,
     uniforme INT NULL,
-    eventoEspecial INT NULL,
-    FOREIGN KEY (mensualidad) REFERENCES mensualidades(numero),
+    eventoEspecial VARCHAR(5) NULL,
+    FOREIGN KEY (ciclo) REFERENCES ciclos_escolares(codigo),
+    FOREIGN KEY (mensualidad) REFERENCES mensualidades(codigo),
     FOREIGN KEY (mantenimiento) REFERENCES mantenimiento(numero),
-    FOREIGN KEY (inscripcion) REFERENCES inscripciones(numero),
-    FOREIGN KEY (papeleria) REFERENCES papeleria(numero),
+    FOREIGN KEY (inscripcion) REFERENCES inscripciones(codigo),
+    FOREIGN KEY (papeleria) REFERENCES papeleria(codigo),
     FOREIGN KEY (uniforme) REFERENCES uniformes(numero),
-    FOREIGN KEY (eventoEspecial) REFERENCES eventos_especiales(numero)
+    FOREIGN KEY (eventoEspecial) REFERENCES eventos_especiales(codigo)
 )
 
 CREATE TABLE detalles_pago(
-    folio INT AUTO_INCREMENT,
-    pago INT,
-    cobro VARCHAR(7),
-    PRIMARY KEY (folio, pago, cobro),
-    FOREIGN KEY (pago) REFERENCES pagos(folio),
-    FOREIGN KEY (cobro) REFERENCES cobros(codigo)
+    folioPago INT,
+    codigoCobro VARCHAR(11),
+    PRIMARY KEY (folioPago, codigoCobro),
+    FOREIGN KEY (folioPago) REFERENCES pagos(folio),
+    FOREIGN KEY (codigoCobro) REFERENCES cobros(codigo)
 )
 
 ---
