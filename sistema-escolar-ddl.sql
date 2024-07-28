@@ -56,6 +56,7 @@ CREATE TABLE mantenimiento(
 CREATE TABLE papeleria(
     codigo VARCHAR(8) PRIMARY KEY,
     concepto VARCHAR(40) NOT NULL,
+    grado INT NOT NULL,
     costo FLOAT NOT NULL CHECK (costo >= 0),
     nivel VARCHAR(5) NOT NULL,
     FOREIGN KEY (nivel) REFERENCES niveles_educativos(codigo)
