@@ -81,7 +81,7 @@ CREATE TABLE tipos_uniforme(
 )
 
 CREATE TABLE uniformes(
-    numero INT PRIMARY KEY AUTO_INCREMENT,
+    codigo VARCHAR(12) PRIMARY KEY,
     concepto VARCHAR(40) NOT NULL,
     talla VARCHAR(5) NOT NULL,
     costo FLOAT NOT NULL CHECK (costo >= 0),
@@ -135,26 +135,26 @@ CREATE TABLE pagos(
 )
 
 CREATE TABLE cobros(
-    codigo VARCHAR(11) PRIMARY KEY,
+    codigo VARCHAR(15) PRIMARY KEY,
     ciclo VARCHAR(5) NOT NULL,
     mensualidad VARCHAR(5) NULL,
     mantenimiento INT NULL,
     inscripcion VARCHAR(5) NULL,
     papeleria VARCHAR(8) NULL,
-    uniforme INT NULL,
+    uniforme VARCHAR(12) NULL,
     eventoEspecial VARCHAR(5) NULL,
     FOREIGN KEY (ciclo) REFERENCES ciclos_escolares(codigo),
     FOREIGN KEY (mensualidad) REFERENCES mensualidades(codigo),
     FOREIGN KEY (mantenimiento) REFERENCES mantenimiento(numero),
     FOREIGN KEY (inscripcion) REFERENCES inscripciones(codigo),
     FOREIGN KEY (papeleria) REFERENCES papeleria(codigo),
-    FOREIGN KEY (uniforme) REFERENCES uniformes(numero),
+    FOREIGN KEY (uniforme) REFERENCES uniformes(codigo),
     FOREIGN KEY (eventoEspecial) REFERENCES eventos_especiales(codigo)
 )
 
 CREATE TABLE detalles_pago(
     folioPago INT,
-    codigoCobro VARCHAR(11),
+    codigoCobro VARCHAR(15),
     PRIMARY KEY (folioPago, codigoCobro),
     FOREIGN KEY (folioPago) REFERENCES pagos(folio),
     FOREIGN KEY (codigoCobro) REFERENCES cobros(codigo)
