@@ -69,7 +69,7 @@ CREATE TABLE inscripciones(
 )
 
 CREATE TABLE mensualidades(
-    codigo VARCHAR(8) PRIMARY KEY, -- PRE1-21
+    codigo VARCHAR(9) PRIMARY KEY, -- PRE1-21
     mes INT NOT NULL CHECK (mes >= 1 AND mes <= 12),
     mesVacacional BOOLEAN NOT NULL DEFAULT FALSE,
     costo FLOAT NOT NULL CHECK (costo >= 0),
@@ -139,7 +139,7 @@ CREATE TABLE pagos(
 CREATE TABLE cobros(
     codigo VARCHAR(15) PRIMARY KEY,
     ciclo VARCHAR(5) NOT NULL,
-    mensualidad VARCHAR(8) NULL,
+    mensualidad VARCHAR(9) NULL,
     mantenimiento INT NULL,
     inscripcion VARCHAR(6) NULL,
     papeleria VARCHAR(8) NULL,
