@@ -69,7 +69,9 @@ CREATE TABLE inscripciones(
 )
 
 CREATE TABLE mensualidades(
-    codigo VARCHAR(6) PRIMARY KEY,
+    codigo VARCHAR(8) PRIMARY KEY, -- PRE1-21
+    mes INT NOT NULL CHECK (mes >= 1 AND mes <= 12),
+    mesVacacional BOOLEAN NOT NULL DEFAULT FALSE,
     costo FLOAT NOT NULL CHECK (costo >= 0),
     nivel VARCHAR(5) NOT NULL,
     FOREIGN KEY (nivel) REFERENCES niveles_educativos(codigo)
@@ -137,7 +139,7 @@ CREATE TABLE pagos(
 CREATE TABLE cobros(
     codigo VARCHAR(15) PRIMARY KEY,
     ciclo VARCHAR(5) NOT NULL,
-    mensualidad VARCHAR(6) NULL,
+    mensualidad VARCHAR(8) NULL,
     mantenimiento INT NULL,
     inscripcion VARCHAR(6) NULL,
     papeleria VARCHAR(8) NULL,
