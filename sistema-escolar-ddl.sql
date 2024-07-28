@@ -62,14 +62,14 @@ CREATE TABLE papeleria(
 )
 
 CREATE TABLE inscripciones(
-    codigo VARCHAR(5) PRIMARY KEY,
+    codigo VARCHAR(6) PRIMARY KEY,
     costo FLOAT NOT NULL CHECK (costo >= 0),
     nivel VARCHAR(5) NOT NULL,
     FOREIGN KEY (nivel) REFERENCES niveles_educativos(codigo)
 )
 
 CREATE TABLE mensualidades(
-    codigo VARCHAR(5) PRIMARY KEY,
+    codigo VARCHAR(6) PRIMARY KEY,
     costo FLOAT NOT NULL CHECK (costo >= 0),
     nivel VARCHAR(5) NOT NULL,
     FOREIGN KEY (nivel) REFERENCES niveles_educativos(codigo)
@@ -137,9 +137,9 @@ CREATE TABLE pagos(
 CREATE TABLE cobros(
     codigo VARCHAR(15) PRIMARY KEY,
     ciclo VARCHAR(5) NOT NULL,
-    mensualidad VARCHAR(5) NULL,
+    mensualidad VARCHAR(6) NULL,
     mantenimiento INT NULL,
-    inscripcion VARCHAR(5) NULL,
+    inscripcion VARCHAR(6) NULL,
     papeleria VARCHAR(8) NULL,
     uniforme VARCHAR(12) NULL,
     eventoEspecial VARCHAR(5) NULL,
