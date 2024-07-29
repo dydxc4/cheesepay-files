@@ -4837,7 +4837,7 @@ INSERT INTO pagos VALUES
 ('3546','2024-07-31','6650.30','00172','160'),
 ('3547','2024-07-31','2299.00','00001','1')
 
-INSERT INTO detalles_pagos VALUES
+INSERT INTO detalles_pago VALUES
 ('1','INS-PRI-21'),
 ('1','MEN-PRI-21-1'),
 ('1','UN-PRI-NCH-M-21'),
